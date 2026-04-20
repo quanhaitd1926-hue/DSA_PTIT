@@ -22,7 +22,7 @@ void nhap(){
 
 #define ii pair<int, int>
 
-void Dijkatra(int s){
+void Dijkstra(int s){
 	vector<int> d(n + 1, 1e9);
 	d[s] = 0;
 	priority_queue<ii, vector<ii>, greater<ii>> Q;
@@ -52,7 +52,7 @@ int main(){
 	int t; cin >> t;
 	while(t--){
 		nhap();
-		Dijkatra(s);
+		Dijkstra(s);
 		for(int i = 1; i <= 200005; i++){
 			ke[i].clear();
 		}
