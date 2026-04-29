@@ -8,7 +8,7 @@ using namespace std;
 const int mod = 1000000007;
 
 int n, m;
-vector<int> ke[200005];
+set<int> ke[200005];
 int visited[200005] = {0};
 vector<pair<int, int>> dscanh;
 
@@ -17,32 +17,26 @@ void nhap(){
 	for(int i = 1; i <= m; i++){
 		int x, y; cin >> x >> y;
 		dscanh.push_back({x, y});
-		ke[x].push_back(y);
-		ke[y].push_back(x);
-	}
-	for(int i = 1; i <= n; i++){
-		sort(ke[i].begin(), ke[i].end());
+		ke[x].insert(y);
+		ke[y].insert(x);
 	}
 }
 
-void DFS(int u, int s, int t){
+void DFS(int u){
 	visited[u] = 1;
 	for(int v : ke[u]){
-		if((u == s && v == t) || (u == t && v == s)){
-			continue;
-		}
 		if(!visited[v]){
-			DFS(v, s, t);
+			DFS(v);
 		}
 	}
 }
 
-int tplt(int s, int t){
+int ConnectedComponent(){
 	int cnt = 0;
 	for(int i = 1; i <= n; i++){
 		if(!visited[i]){
 			++cnt;
-			DFS(i, s, t);
+			DFS(i);
 		}
 	}
 	return cnt;
@@ -52,24 +46,26 @@ int main(){
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	
-	int T; cin >> T;
-	while(T--){
+	int t; cin >> t;
+	while(t--){
 		nhap();
-		sort(dscanh.begin(), dscanh.end());
-		int TPLT = tplt(0, 0);
-		int cnt = 0;
+		int cc = ConnectedComponent();
 		for(auto it : dscanh){
-			int x = it.first; int y = it.second;
 			memset(visited, 0, sizeof(visited));
-			if(TPLT < tplt(x, y)){
+			int x = it.first, y = it.second;
+			ke[x].erase(y);
+			ke[y].erase(x);
+			if(cc < ConnectedComponent()){
 				cout << x << " " << y << " ";
 			}
+			ke[x].insert(y);
+			ke[y].insert(x);
 		}
 		cout << endl;
-		memset(visited, 0, sizeof(visited));
-		for(int i = 1; i <= 200005; i++){
+		for(int i = 1; i <= n; i++){
 			ke[i].clear();
 		}
+		memset(visited, 0, sizeof(visited));
 		dscanh.clear();
 	}
 	return 0;
